@@ -5,6 +5,7 @@
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
