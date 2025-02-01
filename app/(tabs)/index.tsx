@@ -24,22 +24,33 @@ import {
 } from "react-native-heroicons/solid";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { useCallback, useState } from "react";
-import { fetchLocations } from "@/api/weather";
+import { fetchLocations, fetchWeatherForecast } from "@/api/weather";
 export default function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
-  const [locations, setLocations] = useState([1, 2, 3]);
+  const [locations, setLocations] = useState([]);
+  const [weather, setWeather] = useState({});
   const handleLocation = (loc) => {
     console.log("location:", loc);
+    setLocations([]);
+    toggleSearch(false);
+    fetchWeatherForecast({
+      cityName: loc.name,
+      days: 7,
+    }).then((data) => {
+      setWeather(data);
+      console.log("git forecast:", data);
+    });
   };
   const handleSearch = (value) => {
     if (value.length > 2) {
       fetchLocations({ cityName: value }).then((data) => {
-        console.log("got locations", data);
+        setLocations(data);
       });
     }
     //console.log("value", value);//
   };
-  const handleTextDebounce = useCallback(debounce(handleSearch, 1200));
+  const handleTextDebounce = useCallback(debounce(handleSearch, 1200), []);
+  const { current, location } = weather;
 
   return (
     <View className="flex-1 relative">
@@ -52,7 +63,7 @@ export default function HomeScreen() {
       <SafeAreaView className="flex flex-1">
         <View style={{ height: "7%" }} className="mx-4 relative z-50">
           <View
-            className="flex-row mt-8 justify-end items-center rounded-full"
+            className="flex-row mt-12 justify-end items-center rounded-full"
             style={{
               backgroundColor: showSearch
                 ? "rgba(255,255,255,0.1)"
@@ -77,7 +88,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
           {locations.length > 0 && showSearch ? (
-            <View className="absolute w-full bg-gray-300 mt-10 top-16 rounded-3xl">
+            <View className="absolute w-full bg-gray-300 mt-14 top-16 rounded-3xl">
               {locations.map((loc, index) => {
                 let showBorder = index + 1 != locations.length;
                 let borderClass = showBorder
@@ -94,7 +105,7 @@ export default function HomeScreen() {
                   >
                     <MapPinIcon size={20} color={"gray"}></MapPinIcon>
                     <Text className="text-black text-lg ml-2">
-                      London,United Kingdom
+                      {loc?.name},{loc?.country}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -102,25 +113,26 @@ export default function HomeScreen() {
             </View>
           ) : null}
         </View>
-        <View className="mx-4 flex justify-around flex-1 mb-2">
+        <View className="mx-4 flex justify-around flex-1 mb-2 mt-6">
           <Text className="text-white text-center text-2xl font-bold">
-            London,
+            {location?.name},
             <Text className="text-lg font-semibold text-gray-300">
-              United Kingdom
+              {"" + location?.country}
             </Text>
           </Text>
           <View className="flex-row justify-center">
             <Image
-              className="w-52 h-52"
-              source={require("../../assets/images/partlycloudy.png")}
+              className="w-52 h-52 mt-6"
+              source={{uri:'https:'+current?.condition?.icon}}
+              //source={require("../../assets/images/partlycloudy.png")}//
             ></Image>
           </View>
           <View className="space-y-2"></View>
           <Text className="text-center font-bold text-white text-6xl ml-5">
-            23&#176;
+            {current?.temp_c}&#176;
           </Text>
           <Text className="text-center text-white text-xl tracking-widest">
-            Partly Cloudy
+            {current?.condition?.text}
           </Text>
         </View>
         <View className="flex-row justify-between mx-8 mb-5">
