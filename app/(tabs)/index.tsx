@@ -23,7 +23,7 @@ import {
   CalendarDaysIcon,
 } from "react-native-heroicons/solid";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
-import { useCallback, useState } from "react";
+import { useCallback, useState,useEffect } from "react";
 import { fetchLocations, fetchWeatherForecast } from "@/api/weather";
 import { weatherImages } from "@/constants/weatherFeatures";
 export default function HomeScreen() {
@@ -50,6 +50,16 @@ export default function HomeScreen() {
     }
     //console.log("value", value);//
   };
+  useEffect(()=>{
+      fetchMyWeatherData()
+      },[]);
+      const fetchMyWeatherData=async()=>{
+          fetchWeatherForecast({
+              cityName:'rabat',
+              days:'7'}).then(data=>{
+                  setWeather(data)
+                  })
+          }
   const handleTextDebounce = useCallback(debounce(handleSearch, 1200), []);
   const { current, location } = weather;
 
