@@ -15,19 +15,32 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { StatusBar } from "expo-status-bar";
+import { debounce } from "lodash";
 // import { TextInput } from "react-native-gesture-handler";
-import { MapIcon, MapPinIcon ,CalendarDaysIcon,} from "react-native-heroicons/solid";
 import {
-  MagnifyingGlassIcon,
-
-} from "react-native-heroicons/outline";
-import { useState } from "react";
+  MapIcon,
+  MapPinIcon,
+  CalendarDaysIcon,
+} from "react-native-heroicons/solid";
+import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
+import { useCallback, useState } from "react";
+import { fetchLocations } from "@/api/weather";
 export default function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([1, 2, 3]);
   const handleLocation = (loc) => {
     console.log("location:", loc);
   };
+  const handleSearch = (value) => {
+    if (value.length > 2) {
+      fetchLocations({ cityName: value }).then((data) => {
+        console.log("got locations", data);
+      });
+    }
+    //console.log("value", value);//
+  };
+  const handleTextDebounce = useCallback(debounce(handleSearch, 1200));
+
   return (
     <View className="flex-1 relative">
       <StatusBar style="light"></StatusBar>
@@ -48,6 +61,7 @@ export default function HomeScreen() {
           >
             {showSearch ? (
               <TextInput
+                onChangeText={handleTextDebounce}
                 placeholder="Search city"
                 placeholderTextColor={"lightgray"}
                 className="pl-6 h-10 flex-1 text-base text-white"
@@ -63,7 +77,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
           {locations.length > 0 && showSearch ? (
-            <View className="absolute w-full bg-gray-300 top-16 rounded-3xl">
+            <View className="absolute w-full bg-gray-300 mt-10 top-16 rounded-3xl">
               {locations.map((loc, index) => {
                 let showBorder = index + 1 != locations.length;
                 let borderClass = showBorder
@@ -143,7 +157,7 @@ export default function HomeScreen() {
           >
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
@@ -154,7 +168,7 @@ export default function HomeScreen() {
             </View>
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
@@ -165,7 +179,7 @@ export default function HomeScreen() {
             </View>
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
@@ -176,7 +190,7 @@ export default function HomeScreen() {
             </View>
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
@@ -187,7 +201,7 @@ export default function HomeScreen() {
             </View>
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
@@ -198,7 +212,7 @@ export default function HomeScreen() {
             </View>
             <View
               className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             >
               <Image
                 className="h-11 w-11"
