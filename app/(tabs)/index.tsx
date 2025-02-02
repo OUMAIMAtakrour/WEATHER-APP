@@ -27,6 +27,7 @@ import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { useCallback, useState, useEffect } from "react";
 import { fetchLocations, fetchWeatherForecast } from "@/api/weather";
 import { weatherImages } from "@/constants/weatherFeatures";
+import { storeData } from "@/utils/asyncStorage";
 export default function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([]);
@@ -43,7 +44,7 @@ export default function HomeScreen() {
     }).then((data) => {
       setWeather(data);
       setLoading(false);
-
+      storeData('city',loc.name);
       console.log("git forecast:", data);
     });
   };
@@ -59,8 +60,11 @@ export default function HomeScreen() {
     fetchMyWeatherData();
   }, []);
   const fetchMyWeatherData = async () => {
+      let myCity=await getData('city')
+      let cityName='Rabat';
+      if (myCity)cityName=myCity;
     fetchWeatherForecast({
-      cityName: "rabat",
+      cityName,
       days: "7",
     }).then((data) => {
       setWeather(data);
