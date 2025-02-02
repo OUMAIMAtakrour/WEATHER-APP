@@ -45,7 +45,7 @@ export default function HomeScreen() {
       setWeather(data);
       setLoading(false);
       storeData("city", loc.name);
-      //console.log("git forecast:", data);
+      console.log("git forecast:", data);
     });
   };
   const handleSearch = (value) => {
@@ -61,8 +61,8 @@ export default function HomeScreen() {
   }, []);
   const fetchMyWeatherData = async () => {
     let myCity = await getData("city");
-    let cityName='rabat'
-    if(myCity) cityName=myCity
+    let cityName = "rabat";
+    if (myCity) cityName = myCity;
     fetchWeatherForecast({
       cityName,
       days: "7",
