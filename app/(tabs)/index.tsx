@@ -27,7 +27,7 @@ import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import { useCallback, useState, useEffect } from "react";
 import { fetchLocations, fetchWeatherForecast } from "@/api/weather";
 import { weatherImages } from "@/constants/weatherFeatures";
-import { storeData } from "@/utils/asyncStorage";
+import { getData, storeData } from "@/utils/asyncStorage";
 export default function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([]);
@@ -44,8 +44,8 @@ export default function HomeScreen() {
     }).then((data) => {
       setWeather(data);
       setLoading(false);
-      storeData('city',loc.name);
-      console.log("git forecast:", data);
+      storeData("city", loc.name);
+      //console.log("git forecast:", data);
     });
   };
   const handleSearch = (value) => {
@@ -60,9 +60,9 @@ export default function HomeScreen() {
     fetchMyWeatherData();
   }, []);
   const fetchMyWeatherData = async () => {
-      let myCity=await getData('city')
-      let cityName='Rabat';
-      if (myCity)cityName=myCity;
+    let myCity = await getData("city");
+    let cityName='rabat'
+    if(myCity) cityName=myCity
     fetchWeatherForecast({
       cityName,
       days: "7",
@@ -188,7 +188,7 @@ export default function HomeScreen() {
                 className="h-6 w-6"
               />
               <Text className="text-white font-semibold text-base">
-                6:05 AM
+                {weather?.forecast?.forecastday[0]?.astro?.sunrise}
               </Text>
             </View>
           </View>
